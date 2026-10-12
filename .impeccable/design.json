@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "northStar": "A dark editorial interaction casefile that balances product clarity with expressive multimedia craft.",
+  "audiences": {
+    "primary": "Mainland technology-company interaction, product and AI product experience recruiters",
+    "secondary": "PolyU MScIME admissions reviewers"
+  },
+  "tokens": {
+    "colors": {
+      "paper": "#050505",
+      "surface": "#101010",
+      "line": "#252525",
+      "ink": "#F5F5F2",
+      "inkSoft": "#A1A1A1",
+      "productGraphite": "#11140C",
+      "productLime": "#D8E85C"
+    },
+    "radius": {
+      "card": "16px",
+      "pill": "999px"
+    },
+    "layout": {
+      "maxWidth": "80rem",
+      "mobileGutter": "20px",
+      "desktopGutter": "32px"
+    }
+  },
+  "motion": {
+    "revealDuration": "750-820ms",
+    "easing": "cubic-bezier(.2,.7,.2,1)",
+    "reducedMotion": "Disable particles, transforms, smooth scrolling and reveal transitions"
+  }
+}

@@ -1,0 +1,240 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import packageDesign from '../assets/images/oyster/package-design.png';
+import mapDesign from '../assets/images/oyster/map-design.png';
+import { PROJECT_ZH, UI, type Locale } from '@/i18n';
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  Content: any;
+  locale?: Locale;
+}
+
+const { entry, Content, locale = 'en' } = Astro.props;
+const translated = locale === 'zh' ? PROJECT_ZH[entry.id] : undefined;
+const { year, cover, detailCover } = entry.data;
+const title = translated?.title ?? entry.data.title;
+const summary = translated?.summary ?? entry.data.summary;
+const role = translated?.role ?? entry.data.role;
+const projectType = translated?.projectType ?? entry.data.projectType;
+const gallery = entry.data.gallery.map((item, index) => ({ ...item, ...(translated?.gallery[index] ?? {}) }));
+const copy = UI[locale];
+const prefix = locale === 'zh' ? '/zh' : '';
+const heroImage = detailCover ?? cover;
+const bubbles = Array.from({ length: 44 }, (_, index) => ({
+  x: (index * 37 + 11) % 100,
+  y: (index * 29 + 3) % 100,
+  size: 5 + ((index * 11) % 24),
+  delay: -((index * 1.7) % 18),
+  duration: 12 + ((index * 7) % 14),
+  drift: -28 + ((index * 13) % 56),
+}));
+
+const presentationDesigns = [
+  {
+    image: packageDesign,
+    alt: 'Oyster Reef Revival board game packaging design',
+    caption: locale === 'zh' ? '包装设计' : 'Packaging design',
+    fit: 'contain',
+  },
+  {
+    image: mapDesign,
+    alt: 'Oyster Reef Revival circular board map design',
+    caption: locale === 'zh' ? '桌游地图设计' : 'Board map design',
+    fit: 'cover',
+  },
+];
+---
+
+<article class="oyster-page relative isolate overflow-hidden text-[#eefaff]">
+  <div class="bubble-field" aria-hidden="true">
+    {bubbles.map((bubble) => <span style={`--x:${bubble.x}%;--y:${bubble.y}%;--size:${bubble.size}px;--delay:${bubble.delay}s;--duration:${bubble.duration}s;--drift:${bubble.drift}px`}></span>)}
+  </div>
+
+  <header class="relative z-10 mx-auto max-w-7xl px-5 pt-12 pb-16 sm:px-8 sm:pt-20 sm:pb-24">
+    <a href={`${prefix}/#work`} class="text-blue-100/65 hover:text-[#f5f5f2] font-mono text-xs uppercase transition-colors">← {copy.selectedWorkBack}</a>
+    <h1 class="oyster-title mx-auto mt-14 max-w-6xl text-center font-display text-[clamp(3.5rem,9vw,9rem)] leading-[0.82] font-semibold tracking-[-0.075em] text-[#f5f5f2]" data-oyster-reveal>{title}</h1>
+
+    <div class="mt-16 grid gap-10 md:grid-cols-2 md:gap-0" data-oyster-reveal>
+      <dl class="space-y-8 md:pr-14">
+        <div><dt>{copy.type}</dt><dd>{projectType}</dd></div>
+        <div><dt>{copy.date}</dt><dd>{year}</dd></div>
+        <div><dt>{copy.roleLabel}</dt><dd>{role}</dd></div>
+      </dl>
+      <div class="border-blue-200/20 md:border-l md:pl-14">
+        <p class="font-display text-2xl leading-snug tracking-[-0.025em] text-blue-50 sm:text-3xl">{summary}</p>
+      </div>
+    </div>
+  </header>
+
+  {heroImage && <div class="relative z-10 mx-auto max-w-[1500px] px-5 sm:px-8" data-oyster-reveal><div class="hero-image relative overflow-hidden rounded-[1.5rem] border border-blue-100/15 bg-[#020b18]"><Image src={heroImage} alt={`${title} complete board game prototype`} class="aspect-[16/9] w-full object-cover brightness-[.8] saturate-[1.08] contrast-[.94]" widths={[640, 960, 1440, 1920]} sizes="100vw" /><span class="pointer-events-none absolute inset-0 bg-[#075985]/0" aria-hidden="true"></span></div></div>}
+
+  <div class="relative z-10 mx-auto max-w-4xl px-5 py-20 sm:px-8 sm:py-32">
+    <div class="oyster-prose prose prose-invert max-w-none" data-oyster-reveal>{translated ? translated.sections.map((section) => <><h2>{section.heading}</h2><p>{section.body}</p></>) : <Content />}</div>
+  </div>
+
+  <section class="relative z-10 mx-auto max-w-7xl px-5 pb-24 sm:px-8 sm:pb-36" aria-labelledby="oyster-gallery-heading">
+    <div class="mb-9 flex items-end justify-between border-b border-blue-200/20 pb-5" data-oyster-reveal><h2 id="oyster-gallery-heading" class="font-display text-3xl font-semibold tracking-[-0.04em] sm:text-5xl">{copy.visualDesign}</h2></div>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {gallery.map((item, index) => <figure class="flex h-full flex-col" data-oyster-reveal style={`--reveal-delay:${index * 90}ms`}><div class="card-image overflow-hidden rounded-2xl border border-blue-100/15 bg-[#020b18]">{item.image && <Image src={item.image} alt={item.alt} class="aspect-[3/4] w-full object-cover transition duration-500 hover:scale-[1.035]" widths={[360, 540, 720]} sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw" />}</div><figcaption class="mt-4 min-h-12 text-sm leading-6 text-blue-100/70">{item.caption}</figcaption></figure>)}
+    </div>
+    <div class="mt-12 grid items-stretch gap-5 md:grid-cols-2">
+      {presentationDesigns.map((item, index) => <figure class="flex h-full flex-col" data-oyster-reveal style={`--reveal-delay:${index * 110}ms`}><div class="presentation-image flex aspect-[16/10] items-center justify-center overflow-hidden rounded-2xl bg-transparent p-5 sm:p-8"><Image src={item.image} alt={item.alt} class:list={["h-full w-full transition duration-500 hover:scale-[1.025]", item.fit === 'contain' ? 'object-contain' : 'object-cover']} widths={[640, 960, 1280]} sizes="(min-width:768px) 50vw, 100vw" /></div><figcaption class="mt-4 text-sm leading-6 text-blue-100/70">{item.caption}</figcaption></figure>)}
+    </div>
+  </section>
+
+  <nav class="relative z-10 border-t border-blue-200/20"><div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-10 sm:px-8"><a href={`${prefix}/#work`} class="font-mono text-xs uppercase">← {copy.allProjects}</a><a href="#top" class="font-mono text-xs text-blue-100/65 uppercase">{copy.backTop} ↑</a></div></nav>
+</article>
+
+<script is:inline>
+  function setupOysterReveals() {
+    const elements = document.querySelectorAll('[data-oyster-reveal]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+    elements.forEach((element) => {
+      element.classList.add('oyster-reveal');
+      observer.observe(element);
+    });
+  }
+  setupOysterReveals();
+  document.addEventListener('astro:page-load', setupOysterReveals);
+</script>
+
+<style>
+  .oyster-page {
+    background:
+      radial-gradient(circle at 50% 1%, rgba(20, 126, 214, 0.28), transparent 36rem),
+      linear-gradient(180deg, #07376a 0%, #052a52 18%, #031d3b 43%, #020d1c 72%, #00040a 100%);
+  }
+
+  .bubble-field {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bubble-field span {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--size);
+    height: var(--size);
+    border: 1px solid rgba(190, 238, 255, 0.3);
+    border-radius: 999px;
+    box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.28);
+    opacity: 0;
+    animation: bubble-rise var(--duration) linear var(--delay) infinite;
+  }
+
+  .oyster-title {
+    text-shadow: 0 8px 50px rgba(0, 22, 50, 0.42);
+  }
+
+  dt {
+    color: rgba(211, 242, 255, 0.58);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin-top: 0.55rem;
+    max-width: 24rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: #f2fbff;
+  }
+
+  .hero-image {
+    box-shadow: 0 35px 100px rgba(0, 12, 30, 0.52);
+  }
+
+  .oyster-prose {
+    --tw-prose-body: rgba(224, 246, 255, 0.78);
+    --tw-prose-headings: #f5f5f2;
+    --tw-prose-bold: #f5f5f2;
+    position: relative;
+    padding-left: clamp(3.25rem, 6vw, 5.5rem);
+  }
+
+  .oyster-prose::before {
+    content: '';
+    position: absolute;
+    top: 2.1rem;
+    bottom: 8.7rem;
+    left: clamp(0.55rem, 1.5vw, 1.25rem);
+    width: 1px;
+    background: linear-gradient(180deg, rgba(103, 211, 255, 0.3), rgba(103, 211, 255, 0.75), rgba(103, 211, 255, 0.3));
+  }
+
+  .oyster-prose :global(h2) {
+    position: relative;
+    margin-top: 5rem;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+
+  .oyster-prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .oyster-prose :global(h2::before) {
+    content: '';
+    position: absolute;
+    top: 0.34em;
+    left: calc(-1 * clamp(3.25rem, 6vw, 5.5rem) + clamp(0.55rem, 1.5vw, 1.25rem) - 0.38rem);
+    width: 0.78rem;
+    height: 0.78rem;
+    border: 1px solid rgba(157, 227, 255, 0.92);
+    border-radius: 999px;
+    background: #041321;
+    box-shadow: 0 0 0 5px rgba(45, 160, 210, 0.08), 0 0 22px rgba(72, 194, 245, 0.35);
+  }
+
+  .oyster-prose :global(p) {
+    max-width: 46rem;
+    font-size: 1.08rem;
+    line-height: 1.85;
+  }
+
+  .oyster-reveal {
+    opacity: 0;
+    transform: translateY(38px);
+    transition: opacity 900ms cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms), transform 900ms cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms);
+  }
+
+  .oyster-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes bubble-rise {
+    0% { transform: translate3d(0, 0, 0) scale(.75); opacity: 0; }
+    12% { opacity: .42; }
+    82% { opacity: .22; }
+    100% { transform: translate3d(var(--drift), -55vh, 0) scale(1.15); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bubble-field { display: none; }
+    .oyster-reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  @media (max-width: 639px) {
+    .oyster-prose::before {
+      bottom: 11rem;
+    }
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import { SITE } from '@/site.config';
+
+const tools = ['Unity', 'Figma', '3D Design', 'Visual Design', 'Prototyping', 'User Testing'];
+---
+
+<BaseLayout title="About" description={`A bit about ${SITE.name} and how they work.`}>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <p class="text-ink-soft mb-6 font-mono text-xs tracking-[0.2em] uppercase">About</p>
+
+    <h1 class="font-display text-ink max-w-xl text-3xl font-medium sm:text-4xl">
+      {SITE.role}.
+    </h1>
+
+    <div class="prose prose-sm sm:prose-base mt-8 max-w-xl">
+      <p>
+        I am a final-year Digital Media Art student at Xiamen University. My work explores how
+        visual systems, interaction and storytelling can turn research into experiences people can
+        understand by playing and participating.
+      </p>
+      <p>
+        I work across games, interactive installations and 3D projects. My process usually moves
+        from research and visual development to prototyping, production and user testing.
+      </p>
+      <p>
+        I am currently looking for opportunities where I can contribute as a digital art designer
+        and continue developing work that connects visual design with interaction.
+      </p>
+    </div>
+
+    <div class="mt-10">
+      <p class="text-ink-soft mb-3 font-mono text-xs tracking-[0.2em] uppercase">Tools</p>
+      <ul class="flex flex-wrap gap-2">
+        {
+          tools.map((tool) => (
+            <li class="border-line text-ink-soft rounded-full border px-3 py-1 font-mono text-xs">
+              {tool}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <Button href={`mailto:${SITE.email}`} class="mt-10">Get in touch</Button>
+  </section>
+</BaseLayout>

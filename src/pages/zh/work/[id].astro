@@ -1,0 +1,23 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import OysterCase from '@/components/OysterCase.astro';
+import ThemedCase from '@/components/ThemedCase.astro';
+import ProductCase from '@/components/ProductCase.astro';
+import { PROJECT_ZH } from '@/i18n';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('work', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'work'>; }
+const { entry } = Astro.props;
+const translated = PROJECT_ZH[entry.id];
+const { Content } = await render(entry);
+const CaseLayout = entry.data.layout === 'oyster' ? OysterCase : entry.data.layout === 'product' ? ProductCase : ThemedCase;
+---
+
+<BaseLayout title={translated?.title ?? entry.data.title} description={translated?.summary ?? entry.data.summary} locale="zh">
+  <CaseLayout entry={entry} Content={Content} locale="zh" />
+</BaseLayout>

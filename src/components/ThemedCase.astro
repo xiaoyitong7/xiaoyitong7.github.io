@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { PROJECT_ZH, UI, type Locale } from '@/i18n';
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  Content: any;
+  locale?: Locale;
+}
+
+const { entry, Content, locale = 'en' } = Astro.props;
+const translated = locale === 'zh' ? PROJECT_ZH[entry.id] : undefined;
+const { year, cover, detailCover, video } = entry.data;
+const title = translated?.title ?? entry.data.title;
+const summary = translated?.summary ?? entry.data.summary;
+const role = translated?.role ?? entry.data.role;
+const projectType = translated?.projectType ?? entry.data.projectType;
+const gallery = entry.data.gallery.map((item, index) => ({ ...item, ...(translated?.gallery[index] ?? {}) }));
+const copy = UI[locale];
+const prefix = locale === 'zh' ? '/zh' : '';
+const heroImage = detailCover ?? cover;
+
+const themes: Record<string, { top: string; middle: string; accent: string; glow: string }> = {
+  'divine-echo': { top: '#102a20', middle: '#07150f', accent: '#82d3a2', glow: 'rgba(74, 176, 116, .18)' },
+  'liquidity-compensation-operation': { top: '#30270b', middle: '#151104', accent: '#e4c653', glow: 'rgba(219, 181, 49, .16)' },
+  'traces-of-evaluation': { top: '#29153c', middle: '#12091d', accent: '#c58cff', glow: 'rgba(164, 92, 221, .2)' },
+};
+const theme = themes[entry.id] ?? themes['traces-of-evaluation'];
+const particles = Array.from({ length: 34 }, (_, index) => ({
+  x: (index * 41 + 7) % 100,
+  y: (index * 23 + 5) % 100,
+  size: 2 + ((index * 7) % 7),
+  delay: -((index * 1.4) % 16),
+  duration: 11 + ((index * 5) % 12),
+}));
+---
+
+<article class="themed-page relative isolate overflow-hidden text-[#f5f5f2]" style={`--theme-top:${theme.top};--theme-middle:${theme.middle};--theme-accent:${theme.accent};--theme-glow:${theme.glow}`}>
+  <div class="particle-field" aria-hidden="true">
+    {particles.map((particle) => <span style={`--x:${particle.x}%;--y:${particle.y}%;--size:${particle.size}px;--delay:${particle.delay}s;--duration:${particle.duration}s`}></span>)}
+  </div>
+
+  <header class="relative z-10 mx-auto max-w-7xl px-5 pt-12 pb-16 sm:px-8 sm:pt-20 sm:pb-24">
+    <a href={`${prefix}/#work`} class="font-mono text-xs uppercase text-[#f5f5f2]/55 transition-colors hover:text-[#f5f5f2]">← {copy.selectedWorkBack}</a>
+    <h1 class="case-title mx-auto mt-14 max-w-6xl text-center font-display text-[clamp(3.5rem,9vw,9rem)] leading-[.84] font-semibold tracking-[-.075em]" data-case-reveal>{title}</h1>
+    <div class="mt-16 grid gap-10 md:grid-cols-2 md:gap-0" data-case-reveal>
+      <dl class="space-y-8 md:pr-14">
+        <div><dt>{copy.type}</dt><dd>{projectType}</dd></div>
+        <div><dt>{copy.date}</dt><dd>{year}</dd></div>
+        <div><dt>{copy.roleLabel}</dt><dd>{role}</dd></div>
+      </dl>
+      <div class="theme-divider md:border-l md:pl-14">
+        <p class="font-display text-2xl leading-snug tracking-[-.025em] text-[#f5f5f2]/90 sm:text-3xl">{summary}</p>
+        {video && <a href={video} target="_blank" rel="noreferrer" class="mt-7 inline-flex items-center gap-2 border-b border-current pb-1 font-mono text-xs uppercase text-[var(--theme-accent)]">{copy.watchFilm} ↗</a>}
+      </div>
+    </div>
+  </header>
+
+  {heroImage && <div class="relative z-10 mx-auto max-w-[1500px] px-5 sm:px-8" data-case-reveal><div class="hero-image overflow-hidden rounded-[1.5rem] border border-white/10"><Image src={heroImage} alt={`${title} installation overview`} class="aspect-[16/9] w-full object-cover" widths={[640, 960, 1440, 1920]} sizes="100vw" /></div></div>}
+
+  <div class="relative z-10 mx-auto max-w-4xl px-5 py-20 sm:px-8 sm:py-32">
+    <div class="case-timeline prose prose-invert max-w-none" data-case-reveal>{translated ? translated.sections.map((section) => <><h2>{section.heading}</h2><p>{section.body}</p></>) : <Content />}</div>
+  </div>
+
+  <section class="relative z-10 mx-auto max-w-7xl px-5 pb-24 sm:px-8 sm:pb-36" aria-labelledby={`gallery-${entry.id}`}>
+    <div class="mb-9 flex items-end justify-between border-b border-white/15 pb-5" data-case-reveal>
+      <h2 id={`gallery-${entry.id}`} class="font-display text-3xl font-semibold tracking-[-.04em] sm:text-5xl">{copy.selectedVisuals}</h2>
+    </div>
+    <div class="grid gap-5 md:grid-cols-2">
+      {gallery.map((item, index) => <figure class="flex h-full flex-col" data-case-reveal style={`--reveal-delay:${index * 80}ms`}>
+        {item.image ? <div class="overflow-hidden rounded-2xl border border-white/10 bg-black/20"><Image src={item.image} alt={item.alt} class="aspect-[16/10] w-full object-cover transition duration-500 hover:scale-[1.02]" widths={[600, 900, 1400]} sizes="(min-width:768px) 50vw, 100vw" /></div> : <div class="flex aspect-[16/10] items-center justify-center rounded-2xl border border-dashed border-white/20 bg-black/15"><span class="max-w-xs px-8 text-center font-mono text-[10px] uppercase leading-6 tracking-[.14em] text-white/40">Image needed<br />{item.alt}</span></div>}
+        <figcaption class="mt-4 min-h-10 text-sm leading-6 text-white/60">{item.caption}</figcaption>
+      </figure>)}
+    </div>
+  </section>
+
+  <nav class="relative z-10 border-t border-white/15"><div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-10 sm:px-8"><a href={`${prefix}/#work`} class="font-mono text-xs uppercase">← {copy.allProjects}</a><a href="#top" class="font-mono text-xs uppercase text-white/55">{copy.backTop} ↑</a></div></nav>
+</article>
+
+<script is:inline>
+  function setupCaseReveals() {
+    const elements = document.querySelectorAll('[data-case-reveal]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .12, rootMargin: '0px 0px -7% 0px' });
+    elements.forEach((element) => {
+      element.classList.add('case-reveal');
+      observer.observe(element);
+    });
+  }
+  setupCaseReveals();
+  document.addEventListener('astro:page-load', setupCaseReveals);
+</script>
+
+<style>
+  .themed-page { background: radial-gradient(circle at 50% 2%, var(--theme-glow), transparent 34rem), linear-gradient(180deg, var(--theme-top) 0%, var(--theme-middle) 34%, #070707 72%, #050505 100%); }
+  .particle-field { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .particle-field span { position: absolute; left: var(--x); top: var(--y); width: var(--size); height: var(--size); border-radius: 999px; background: var(--theme-accent); opacity: 0; box-shadow: 0 0 12px var(--theme-accent); animation: particle-rise var(--duration) ease-in-out var(--delay) infinite; }
+  .case-title { text-shadow: 0 10px 60px rgba(0,0,0,.42); }
+  .theme-divider { border-color: color-mix(in srgb, var(--theme-accent) 24%, transparent); }
+  dt { color: color-mix(in srgb, var(--theme-accent) 62%, white 20%); font-family: var(--font-mono); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; }
+  dd { margin-top: .55rem; max-width: 25rem; color: rgba(255,255,255,.92); font-size: 1rem; line-height: 1.55; }
+  .hero-image { box-shadow: 0 35px 100px rgba(0,0,0,.5); }
+  .case-timeline { --tw-prose-body: rgba(245,245,242,.68); --tw-prose-headings: #f5f5f2; position: relative; padding-left: clamp(3.25rem, 6vw, 5.5rem); }
+  .case-timeline::before { content: ''; position: absolute; top: 2.1rem; bottom: 8.7rem; left: clamp(.55rem, 1.5vw, 1.25rem); width: 1px; background: linear-gradient(180deg, transparent, var(--theme-accent) 15%, var(--theme-accent) 85%, transparent); opacity: .7; }
+  .case-timeline :global(h2) { position: relative; margin-top: 5rem; font-family: var(--font-display); font-size: clamp(2rem, 5vw, 4rem); line-height: .98; letter-spacing: -.045em; }
+  .case-timeline :global(h2:first-child) { margin-top: 0; }
+  .case-timeline :global(h2::before) { content: ''; position: absolute; top: .34em; left: calc(-1 * clamp(3.25rem, 6vw, 5.5rem) + clamp(.55rem, 1.5vw, 1.25rem) - .38rem); width: .78rem; height: .78rem; border: 1px solid var(--theme-accent); border-radius: 999px; background: var(--theme-middle); box-shadow: 0 0 0 5px color-mix(in srgb, var(--theme-accent) 10%, transparent), 0 0 22px color-mix(in srgb, var(--theme-accent) 40%, transparent); }
+  .case-timeline :global(p) { max-width: 46rem; font-size: 1.08rem; line-height: 1.85; }
+  .case-reveal { opacity: 0; transform: translateY(36px); transition: opacity 850ms cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms), transform 850ms cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms); }
+  .case-reveal.is-visible { opacity: 1; transform: translateY(0); }
+  @keyframes particle-rise { 0% { transform: translate3d(0,20px,0) scale(.7); opacity: 0; } 20% { opacity: .24; } 70% { opacity: .12; } 100% { transform: translate3d(18px,-150px,0) scale(1.1); opacity: 0; } }
+  @media (max-width: 639px) { .case-timeline::before { bottom: 11rem; } }
+  @media (prefers-reduced-motion: reduce) { .particle-field { display: none; } .case-reveal { opacity: 1; transform: none; transition: none; } }
+</style>

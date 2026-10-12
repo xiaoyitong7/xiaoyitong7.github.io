@@ -1,0 +1,112 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { PROJECT_ZH, UI, type Locale } from '@/i18n';
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  locale?: Locale;
+}
+
+const { entry, locale = 'en' } = Astro.props;
+const translated = locale === 'zh' ? PROJECT_ZH[entry.id] : undefined;
+const { cover, year, accent } = entry.data;
+const title = translated?.title ?? entry.data.title;
+const summary = translated?.summary ?? entry.data.summary;
+const projectType = translated?.projectType ?? entry.data.projectType;
+const status = translated?.status ?? entry.data.status;
+const isProduct = entry.data.layout === 'product';
+const productShots = entry.data.gallery.filter((item) => item.image).slice(0, 3);
+const prefix = locale === 'zh' ? '/zh' : '';
+const copy = UI[locale];
+---
+
+<a href={`${prefix}/work/${entry.id}`} class="featured-work group block" style={`--accent:${accent}`}>
+  <article class="border-line bg-surface grid min-h-[32rem] overflow-hidden rounded-2xl border transition duration-300 group-hover:border-[var(--accent)] lg:grid-cols-[1.15fr_.85fr]">
+    <div class="featured-visual relative min-h-72 overflow-hidden lg:min-h-full">
+      {isProduct && productShots.length ? (
+        <div class="phone-montage" aria-label={`${title} interface preview`}>
+          {productShots.map((shot, index) => (
+            <div class:list={["phone-shot", `phone-shot-${index + 1}`]}>
+              <Image src={shot.image!} alt={shot.alt} class="h-full w-full object-cover object-top" widths={[300, 480, 620]} sizes="(min-width:1024px) 18vw, 30vw" />
+            </div>
+          ))}
+        </div>
+      ) : cover ? (
+        <Image src={cover} alt={`${title} interface preview`} class:list={["h-full w-full transition duration-700 group-hover:scale-[1.02]", isProduct ? "object-contain object-center p-8 sm:p-12" : "object-cover"]} widths={[720, 1080, 1440]} sizes="(min-width:1024px) 58vw, 100vw" />
+      ) : (
+        <div class="flex h-full min-h-72 items-center justify-center px-8" aria-hidden="true">
+          <div class="featured-mark relative flex aspect-[4/5] w-[min(58%,17rem)] items-center justify-center rounded-[2rem] border border-white/15 bg-[#0d0d26]/80 text-center shadow-2xl">
+            <span class="font-display text-4xl leading-[.9] font-semibold tracking-[-.06em] text-[#f5f5f2]">Fandom<br /><span class="text-[var(--accent)]">MBTI</span></span>
+          </div>
+        </div>
+      )}
+    </div>
+    <div class="flex flex-col p-7 sm:p-10 lg:p-12">
+      <div class="flex items-start justify-between gap-5 font-mono text-[10px] tracking-[.14em] uppercase">
+        <span class="max-w-[75%] text-[var(--accent)]">{projectType}</span>
+        <span class="text-ink-soft">{year}</span>
+      </div>
+      {status && <p class="mt-8 w-fit rounded-full border border-[color-mix(in_srgb,var(--accent)_45%,transparent)] px-3 py-1.5 font-mono text-[10px] tracking-[.13em] text-[var(--accent)] uppercase">{status}</p>}
+      <h3 class="font-display mt-auto pt-12 text-5xl leading-[.9] font-semibold tracking-[-.065em] sm:text-7xl">{title}</h3>
+      <p class="text-ink-soft mt-6 max-w-lg text-base leading-7">{summary}</p>
+      <span class="mt-10 inline-flex items-center gap-2 font-mono text-xs uppercase">{copy.viewProduct} <span class="transition-transform group-hover:translate-x-1">→</span></span>
+    </div>
+  </article>
+</a>
+
+<style>
+  .featured-visual {
+    background:
+      radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 22rem),
+      linear-gradient(145deg, #171a10 0%, #0b0d08 54%, #050505 100%);
+  }
+
+  .phone-montage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(.65rem, 2vw, 1.4rem);
+    padding: clamp(1.25rem, 4vw, 3.5rem);
+    perspective: 1000px;
+  }
+
+  .phone-shot {
+    aspect-ratio: 390 / 844;
+    width: min(29%, 13rem);
+    overflow: hidden;
+    border: 1px solid rgba(216, 232, 92, .18);
+    border-radius: 1.15rem;
+    background: #080a06;
+    box-shadow: 0 1.8rem 5rem rgba(0, 0, 0, .52);
+    transition: transform 700ms cubic-bezier(.2,.7,.2,1);
+  }
+
+  .phone-shot-1 { transform: translateY(4%) rotate(-5deg); }
+  .phone-shot-2 { transform: translateY(-3%); z-index: 2; }
+  .phone-shot-3 { transform: translateY(5%) rotate(5deg); }
+  .featured-work:hover .phone-shot-1 { transform: translateY(1%) rotate(-3deg); }
+  .featured-work:hover .phone-shot-2 { transform: translateY(-5%); }
+  .featured-work:hover .phone-shot-3 { transform: translateY(2%) rotate(3deg); }
+
+  .featured-mark {
+    transform: rotate(-4deg);
+    box-shadow: 0 2rem 7rem rgba(0, 0, 0, 0.62);
+    transition: transform 700ms cubic-bezier(.2,.7,.2,1);
+  }
+
+  .featured-work:hover .featured-mark {
+    transform: rotate(-1deg) translateY(-6px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .featured-mark,
+    .phone-shot,
+    .featured-work article {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

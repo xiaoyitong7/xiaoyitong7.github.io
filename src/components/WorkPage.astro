@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import WorkCard from '@/components/WorkCard.astro';
+import { UI, type Locale } from '@/i18n';
+
+const { locale = 'en' } = Astro.props as { locale?: Locale };
+const copy = UI[locale];
+const workOrder = ['fandom-mbti', 'divine-echo', 'traces-of-evaluation', 'liquidity-compensation-operation', 'oyster-reef-revival'];
+const allWork = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b) => workOrder.indexOf(a.id) - workOrder.indexOf(b.id));
+---
+
+<BaseLayout title={copy.allWork} description={copy.allWorkIntro} locale={locale}>
+  <section class="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
+    <h1 class="font-display text-5xl font-semibold tracking-[-0.04em] sm:text-7xl">{copy.allWork}</h1>
+    <p class="text-ink-soft mt-5 max-w-2xl text-lg leading-7">{copy.allWorkIntro}</p>
+    <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">{allWork.map((entry, index) => <WorkCard entry={entry} index={index} locale={locale} />)}</div>
+  </section>
+</BaseLayout>
