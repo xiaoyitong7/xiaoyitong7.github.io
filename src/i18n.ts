@@ -23,7 +23,7 @@ export const UI = {
   },
   zh: {
     about: '关于', work: '作品', contact: '联系', language: 'EN', languageLabel: 'Switch to English',
-    hero: '你好，我是肖怡彤。', role: '数字媒体艺术。',
+    hero: '你好，我是肖怡彤', role: '数字媒体艺术',
     tagline: '我通过研究、原型设计与视觉叙事，设计数字产品和互动体验。',
     directory: ['关于我', '精选作品', '联系我'],
     aboutLabel: '关于我', aboutTitle: '设计清晰的产品流程，也探索富有表现力的互动媒介。',
@@ -34,7 +34,7 @@ export const UI = {
       ['视觉与空间', '界面设计、三维可视化与互动装置。'],
     ],
     selectedWork: '精选作品', fiveProjects: '五个项目', viewCase: '查看案例', viewProduct: '查看产品案例',
-    contactTitle: '期待交互设计与产品设计方向的机会。',
+    contactTitle: '期待更多工作机会',
     allWork: '全部作品', allWorkIntro: '五个涵盖数字产品、AI 体验、互动装置与实时三维原型的项目。',
     selectedWorkBack: '精选作品', type: '类型', date: '时间', roleLabel: '职责', watchFilm: '观看项目视频',
     selectedVisuals: '视觉展示', visualDesign: '视觉设计', productFlow: '核心产品流程',
