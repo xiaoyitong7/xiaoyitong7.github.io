@@ -23,7 +23,7 @@ export const UI = {
   },
   zh: {
     about: '关于', work: '作品', contact: '联系', language: 'EN', languageLabel: 'Switch to English',
-    hero: '你好，我是肖怡彤。', role: '交互设计师。',
+    hero: '你好，我是肖怡彤。', role: '数字媒体艺术。',
     tagline: '我通过研究、原型设计与视觉叙事，设计数字产品和互动体验。',
     directory: ['关于我', '精选作品', '联系我'],
     aboutLabel: '关于我', aboutTitle: '设计清晰的产品流程，也探索富有表现力的互动媒介。',
