@@ -3,7 +3,7 @@ export type Locale = 'en' | 'zh';
 export const UI = {
   en: {
     about: 'About', work: 'Work', contact: 'Contact', language: '中文', languageLabel: '切换到中文',
-    hero: "Hi, I'm Yitong Xiao.", role: 'Interaction Designer.',
+    hero: "Hi, I'm Yitong Xiao", role: 'Digital Media Art',
     tagline: 'I design digital products and interactive experiences through research, prototyping and visual storytelling.',
     directory: ['ABOUT ME', 'SELECTED WORK', 'CONTACT.'],
     aboutLabel: 'About me', aboutTitle: 'Designing clear product flows and expressive interactive media.',
@@ -14,7 +14,7 @@ export const UI = {
       ['Visual & Spatial', 'Interface design, 3D visualisation and interactive installation.'],
     ],
     selectedWork: 'Selected work', fiveProjects: 'Five projects', viewCase: 'View case study', viewProduct: 'View product case',
-    contactTitle: 'Open to interaction and product design opportunities.',
+    contactTitle: 'Open to more work opportunities',
     allWork: 'All work', allWorkIntro: 'Five projects across digital products, AI-enabled experiences, installations and real-time 3D prototypes.',
     selectedWorkBack: 'Selected work', type: 'Type', date: 'Date', roleLabel: 'Role', watchFilm: 'Watch project film',
     selectedVisuals: 'Selected Visuals', visualDesign: 'Visual Design', productFlow: 'Core product flow',
